@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+      <title>Secure Student Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Secure Student Entry</h1>
+
+  <form method="POST" action="/">
+    {{ form.hidden_tag() }}
+    <p>{{ form.name.label }}<br>{{ form.name(size=40) }}{% for e in form.name.errors %}<span style="color:red">{{ e }}</span>{% endfor %}</p>
+    <p>{{ form.roll_no.label }}<br>{{ form.roll_no(size=40) }}{% for e in form.roll_no.errors %}<span style="color:red">{{ e }}</span>{% endfor %}</p>
+    <p>{{ form.submit() }}</p>
+  </form>
+
+  <h2>Student List</h2>
+  <ul>
+    {% for s in students %}
+      <li>{{ s.name }} – {{ s.roll_no }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Secure Profile Page</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 0;
+      padding: 0;
+    }
+    nav {
+      background-color: #3498db;
+      color: white;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      margin-left: 15px;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    .container {
+      width: 60%;
+      margin: 40px auto;
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 30px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    label {
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    input[type="text"], input[type="password"] {
+      width: 90%;
+      padding: 10px;
+      margin: 5px 0 15px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .flash {
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 5px;
+      width: 80%;
+    }
+    .flash.success { background-color: #d4edda; color: #155724; }
+    .flash.warning { background-color: #fff3cd; color: #856404; }
+    .flash.error   { background-color: #f8d7da; color: #721c24; }
+    .error-msg {
+      color: red;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .test-label {
+      background-color: #f0f0f0;
+      border-left: 5px solid #3498db;
+      padding: 10px;
+      margin-top: 25px;
+      color: #2c3e50;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <!-- 🔹 Navigation Bar -->
+  <nav>
+    <div>
+      <span><strong>{{ user.name }}</strong> | {{ user.email }}</span>
+    </div>
+    <div>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Your Secure Profile</h1>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <!-- Profile Update Form -->
+    <form method="POST" action="{{ url_for('profile') }}">
+        {{ form.hidden_tag() }}
+
+        <label for="name">Name:</label><br>
+        {{ form.name(size=40) }}<br>
+        {% if form.name.errors %}
+            <div class="error-msg">{{ form.name.errors[0] }}</div>
+        {% endif %}
+
+        <label for="email">Email (Read Only):</label><br>
+        {{ form.email(size=40, readonly=True) }}<br>
+
+        <label for="roll_no">Roll Number:</label><br>
+        {{ form.roll_no(size=20) }}<br>
+        {% if form.roll_no.errors %}
+            <div class="error-msg">{{ form.roll_no.errors[0] }}</div>
+        {% endif %}
+
+        <label for="password">New Password (optional):</label><br>
+        {{ form.password(size=40) }}<br>
+        {% if form.password.errors %}
+            <div class="error-msg">{{ form.password.errors[0] }}</div>
+        {% endif %}
+
+        {{ form.submit() }}
+    </form>
+
+    <!-- Label for testing purpose -->
+    <div class="test-label">
+      🔒 <strong>Security Testing Section:</strong>  
+      Try entering <code>&lt;script&gt;alert('XSS')&lt;/script&gt;</code> or  
+      <code>' OR 1=1 --</code> in any field and press Update.  
+      The validators will block the request — proving **Secure Input Handling** is active.
+    </div>
+
+  </div>
+</body>
+</html>
