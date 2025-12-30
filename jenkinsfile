@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/Huzaifa-1cyber/my-flask-app'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                python -m venv venv
+                . venv/bin/activate
+                pip install -r requirements.txt
+                '''
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                sh '''
+                . venv/bin/activate
+                pytest
+                '''
+            }
+        }
+
+        stage('Build Application') {
+            steps {
+                echo 'Building...'
+                sh 'mkdir build; cp -r . build/'
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                echo 'Deploying...'
+                sh '''
+                mkdir -p /tmp/deploy
+                cp -r build/* /tmp/deploy/
+                '''
+            }
+        }
+    }
+}
